@@ -1,37 +1,33 @@
 package main
 
 import (
-	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/pixelgl"
+	"github.com/dbriemann/breeze/winctrl"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-func run() {
-	m := pixelgl.PrimaryMonitor()
-	mw, mh := m.Size()
-	w, h := mw/2, mh/2
+func main() {
+	rl.SetConfigFlags(rl.FlagWindowUndecorated | rl.FlagWindowTransparent)
+	rl.InitWindow(1200, 800, "breeze - the window organizer")
 
-	cfg := pixelgl.WindowConfig{
-		Title:       "breeze - the window organizer",
-		Bounds:      pixel.R(0, 0, w, h),
-		Resizable:   false,
-		VSync:       true,
-		Undecorated: true,
-	}
+	rl.SetTargetFPS(60)
 
-	win, err := pixelgl.NewWindow(cfg)
+	winController := &winctrl.WMCtrl{}
+	windows, err := winController.ListWindows()
 	if err != nil {
 		panic(err)
 	}
 
-	win.SetSmooth(false)
-	win.SetPos(pixel.V((mw-w)/2, (mh-h)/2))
+	for !rl.WindowShouldClose() {
+		rl.BeginDrawing()
 
-	for !win.Closed() && !win.Pressed(pixelgl.KeyEscape) {
-		win.Clear(pixel.Alpha(0.8))
-		win.Update()
+		rl.ClearBackground(rl.NewColor(0, 0, 0, 128))
+
+		for i, win := range windows {
+			rl.DrawText(win.Name, 100, 36*int32(i)+100, 24, rl.White)
+		}
+
+		rl.EndDrawing()
 	}
-}
 
-func main() {
-	pixelgl.Run(run)
+	rl.CloseWindow()
 }
