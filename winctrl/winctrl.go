@@ -28,5 +28,8 @@ type Desktop struct {
 // or use xlib/libxcb.
 type Controller interface {
 	// ListWindows returns a list of all windows on all screens.
-	ListWindows() []Window
+	ListWindows() ([]Window, error)
+	// ShowWindow switches to the desktop containing the window,
+	// raises the window, and gives it focus.
+	ShowWindow(w *Window) error
 }

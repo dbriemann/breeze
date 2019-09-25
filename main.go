@@ -1,6 +1,9 @@
 package main
 
 import (
+	"errors"
+	"time"
+
 	"github.com/dbriemann/breeze/winctrl"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -13,9 +16,13 @@ func main() {
 
 	winController := &winctrl.WMCtrl{}
 	windows, err := winController.ListWindows()
-	if err != nil {
+	if errors.Is(err, winctrl.ErrParseFailed) {
+		panic(err)
+	} else if err != nil {
 		panic(err)
 	}
+
+	time.Sleep(3 * time.Second)
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
@@ -23,6 +30,11 @@ func main() {
 		rl.ClearBackground(rl.NewColor(0, 0, 0, 128))
 
 		for i, win := range windows {
+			// Skip sticky windows, such as desktop or panels.
+			if win.Desktop < 0 {
+				i--
+				continue
+			}
 			rl.DrawText(win.Name, 100, 36*int32(i)+100, 24, rl.White)
 		}
 
