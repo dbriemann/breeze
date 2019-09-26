@@ -4,6 +4,13 @@
 // output.
 package winctrl
 
+type Area struct {
+	X      int32
+	Y      int32
+	Width  int32
+	Height int32
+}
+
 type Window struct {
 	ID      uint32
 	Desktop int32
@@ -20,6 +27,11 @@ type Screen struct {
 }
 
 type Desktop struct {
+	Num      uint32
+	Active   bool
+	DeskArea Area
+	WorkArea Area
+	Name     string
 }
 
 // Controller bundles all functions needed by breeze
@@ -32,4 +44,6 @@ type Controller interface {
 	// ShowWindow switches to the desktop containing the window,
 	// raises the window, and gives it focus.
 	ShowWindow(w *Window) error
+	// ListDesktops returns a list of all desktops.
+	ListDesktops() ([]Desktop, error)
 }

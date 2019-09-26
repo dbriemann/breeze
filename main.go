@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"time"
 
 	"github.com/dbriemann/breeze/winctrl"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -22,7 +21,12 @@ func main() {
 		panic(err)
 	}
 
-	time.Sleep(3 * time.Second)
+	// desktops, err := winController.ListDesktops()
+	// if errors.Is(err, winctrl.ErrParseFailed) {
+	// 	panic(err)
+	// } else if err != nil {
+	// 	panic(err)
+	// }
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()
