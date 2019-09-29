@@ -34,6 +34,28 @@ type Desktop struct {
 	Name     string
 }
 
+type windowAction string
+type windowProperty string
+
+const (
+	ActionAdd    windowAction = "add"
+	ActionToggle windowAction = "toggle"
+	ActionRemove windowAction = "remove"
+
+	PropertyModal       windowProperty = "modal"
+	PropertySticky      windowProperty = "sticky"
+	PropertyMaxVert     windowProperty = "maximized_vert"
+	PropertyMaxHorz     windowProperty = "maximized_horz"
+	PropertyShaded      windowProperty = "shaded"
+	PropertySkipTaskbar windowProperty = "skip_taskbar"
+	PropertySkipPager   windowProperty = "skip_pager"
+	PropertyHidden      windowProperty = "hidden"
+	PropertyFullscreen  windowProperty = "fullscreen"
+	PropertyAbove       windowProperty = "above"
+	PropertyBelow       windowProperty = "below"
+	PropertyNone        windowProperty = ""
+)
+
 // Controller bundles all functions needed by breeze
 // for the manipulation of windows. Future implementations
 // of this interface could talk to the X server directly
@@ -46,4 +68,7 @@ type Controller interface {
 	ShowWindow(w *Window) error
 	// ListDesktops returns a list of all desktops.
 	ListDesktops() ([]Desktop, error)
+	// SetWindowProps allows to add, toggle or remove an arbitrary
+	// amount of window properties.
+	SetWindowProps(w *Window, action windowAction, props ...windowProperty) error
 }

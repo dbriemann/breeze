@@ -20,6 +20,27 @@ var (
 type WMCtrl struct {
 }
 
+func (c *WMCtrl) SetWindowProps(w *Window, action windowAction, props ...windowProperty) error {
+	id := fmt.Sprintf("0x%x", w.ID)
+	l := len(props)
+	for i := 0; i < l; i += 2 {
+		// We always have at least 1 property here.
+		cmd := string(action) + "," + string(props[i])
+		if l-i > 1 {
+			// If we have more append another one. Wmctrl supports to set
+			// up to 2 properties with one command.
+			cmd += "," + string(props[i+1])
+		}
+
+		_, err := execWMCtrl("wmctrl", "-i", "-r", id, "-b", cmd)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (c *WMCtrl) ListDesktops() ([]Desktop, error) {
 	ds := []Desktop{}
 	resp, err := execWMCtrl("wmctrl", "-d")
@@ -77,7 +98,7 @@ func (c *WMCtrl) ListDesktops() ([]Desktop, error) {
 
 func (c *WMCtrl) ShowWindow(w *Window) error {
 	id := fmt.Sprintf("0x%x", w.ID)
-	_, err := execWMCtrl("wmctrl", "-a", id, "-i")
+	_, err := execWMCtrl("wmctrl", "-i", "-a", id)
 
 	return err
 }
